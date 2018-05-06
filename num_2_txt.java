@@ -109,7 +109,7 @@ class Main{
     
         String data;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Enter Number");
+        System.out.println("Enter Number:");
         data = NumtoText.Convert(reader.readLine());
 
         System.out.println(data);
