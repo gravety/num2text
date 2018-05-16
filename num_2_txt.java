@@ -115,7 +115,6 @@ class Main{
     public static void main(String args[]) throws IOException
     {
     
-<<<<<<< HEAD
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/", new MyHandler());
         server.setExecutor(null); // creates a default executor
@@ -148,12 +147,6 @@ class Main{
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
-=======
-        String data;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Enter Number:");
-        data = NumtoText.Convert(reader.readLine());
->>>>>>> 28a16330d9af1014d32b43ba5d9789502e814deb
 
 
 
