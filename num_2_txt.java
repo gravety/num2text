@@ -1,8 +1,16 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.*;
+
+import java.net.InetSocketAddress;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
 
 class NumtoText{
 
@@ -107,13 +115,47 @@ class Main{
     public static void main(String args[]) throws IOException
     {
     
-        String data;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+        server.createContext("/", new MyHandler());
+        server.setExecutor(null); // creates a default executor
+        server.start();
 
-        data = NumtoText.Convert(reader.readLine());
+    }
 
-        System.out.println(data);
+    static class MyHandler implements HttpHandler{
+        @Override
+        public void handle(HttpExchange t) throws IOException {
 
+            try{
+
+            String response = "";
+			String params[];
+
+			if(null == t.getRequestURI().getQuery().split("&")){
+                params = new String[]{t.getRequestURI().getQuery()};
+            }else{
+                params = t.getRequestURI().getQuery().split("&");
+            }
+
+            for(String param: params){
+            
+                response += NumtoText.Convert(param.split("=")[1]) + "\n";
+
+            }
+
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+
+
+
+            }catch(Exception e){
+                System.out.println(e); 
+            }
+
+
+        }
     }
 
 }
