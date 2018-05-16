@@ -126,34 +126,43 @@ class Main{
         @Override
         public void handle(HttpExchange t) throws IOException {
 
+
             try{
+                String response = "", q_params = t.getRequestURI().getQuery();
+                String params[];
 
-            String response = "";
-			String params[];
+                if(q_params == null || q_params.length() == 0){
+                    response = "Usage:\n\tServer accepts query parameter named 'n'\n\tExample: localhost:8000?n=1234&n=879";
+                }else{
 
-			if(null == t.getRequestURI().getQuery().split("&")){
-                params = new String[]{t.getRequestURI().getQuery()};
-            }else{
-                params = t.getRequestURI().getQuery().split("&");
+                    if(null == q_params.split("&")){
+                        params = new String[]{q_params};
+                    }else{
+                        params = q_params.split("&");
+                    }
+
+                    for(String param: params){
+                    
+                        String tmp[] = param.split("=");
+
+                        if((tmp.length > 1) && (tmp[0].equals("n"))){
+                            response += NumtoText.Convert(tmp[1]) + "\n";
+                        }
+
+                    }
+                }
+
+                if(response.length() == 0){
+                    response = "Usage:\n\tServer accepts query parameter named 'n'\n\tExample: localhost:8000?n=1234&n=879";
+                }
+
+                t.sendResponseHeaders(200, response.length());
+                OutputStream os = t.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            }catch(Exception err){
+                System.out.println(err);
             }
-
-            for(String param: params){
-            
-                response += NumtoText.Convert(param.split("=")[1]) + "\n";
-
-            }
-
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-
-
-
-            }catch(Exception e){
-                System.out.println(e); 
-            }
-
 
         }
     }
